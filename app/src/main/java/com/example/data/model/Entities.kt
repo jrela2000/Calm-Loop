@@ -1,0 +1,62 @@
+package com.example.data.model
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "journal_entries")
+data class JournalEntry(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val transcription: String,
+    val activatingEvent: String = "",
+    val beliefs: String = "",
+    val consequences: String = "",
+    val aiSynopsis: String = "",
+    val createdAt: Long = System.currentTimeMillis()
+)
+
+@Entity(tableName = "breathing_sessions")
+data class BreathingSession(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val roundsCompleted: Int,
+    val outcome: String, // "ok", "continue", "switch", "call"
+    val createdAt: Long = System.currentTimeMillis()
+)
+
+@Entity(tableName = "grounding_sessions")
+data class GroundingSession(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val answers5: String, // 5 things SEE
+    val answers4: String, // 4 things TOUCH
+    val answers3: String, // 3 things HEAR
+    val answers2: String, // 2 things SMELL
+    val answers1: String, // 1 thing TASTE
+    val inputMethod: String, // "type" or "voice"
+    val outcome: String, // "again", "breathing", "call", "done"
+    val createdAt: Long = System.currentTimeMillis()
+)
+
+@Entity(tableName = "books")
+data class Book(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val title: String,
+    val author: String,
+    val description: String,
+    val amazonUrl: String,
+    val secondaryUrl: String,
+    val secondaryOutlet: String = "Bookshop.org",
+    val category: String = "CBT & Anxiety"
+)
+
+@Entity(tableName = "affiliate_clicks")
+data class AffiliateClick(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val bookId: Long,
+    val bookTitle: String,
+    val outlet: String,
+    val createdAt: Long = System.currentTimeMillis()
+)

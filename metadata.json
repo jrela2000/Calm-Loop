@@ -1,0 +1,6 @@
+{
+  "name": "CalmLoop",
+  "description": "Mobile-first CBT companion app for panic & anxiety relief with voice journaling, box breathing, grounding game, and crisis support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
