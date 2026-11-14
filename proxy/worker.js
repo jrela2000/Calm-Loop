@@ -61,6 +61,25 @@ function json(body, status = 200) {
   });
 }
 
+/**
+ * Browsers (the web demo) need CORS; native apps send no Origin header. Only origins listed in
+ * ALLOWED_ORIGINS (comma-separated) get CORS headers, so other websites can't use the relay.
+ */
+function allowedOrigin(request, env) {
+  const origin = request.headers.get("origin");
+  if (!origin) return null;
+  const allowed = (env.ALLOWED_ORIGINS || "").split(",").map((o) => o.trim()).filter(Boolean);
+  return allowed.includes(origin) ? origin : null;
+}
+
+function withCors(response, origin) {
+  if (!origin) return response;
+  const headers = new Headers(response.headers);
+  headers.set("access-control-allow-origin", origin);
+  headers.set("vary", "origin");
+  return new Response(response.body, { status: response.status, headers });
+}
+
 async function callGemini(env, prompt, schema) {
   const model = env.GEMINI_MODEL || DEFAULT_MODEL;
   const res = await fetch(
@@ -116,22 +135,41 @@ export async function handleSearch(body, env) {
 
 export default {
   async fetch(request, env) {
-    if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
-    if (!env.GEMINI_API_KEY) return json({ error: "not_configured" }, 503);
-    const { pathname } = new URL(request.url);
-    let body;
-    try {
-      body = await request.json();
-    } catch {
-      return json({ error: "invalid_json" }, 400);
+    const origin = allowedOrigin(request, env);
+    if (request.headers.get("origin") && !origin) return json({ error: "origin_not_allowed" }, 403);
+    if (request.method === "OPTIONS") {
+      if (!origin) return json({ error: "method_not_allowed" }, 405);
+      return new Response(null, {
+        status: 204,
+        headers: {
+          "access-control-allow-origin": origin,
+          "access-control-allow-methods": "POST",
+          "access-control-allow-headers": "content-type",
+          "access-control-max-age": "86400",
+          vary: "origin",
+        },
+      });
     }
-    try {
-      if (pathname === "/v1/reframe") return await handleReframe(body, env);
-      if (pathname === "/v1/search") return await handleSearch(body, env);
-      return json({ error: "not_found" }, 404);
-    } catch {
-      // Deliberately no details: errors must not echo user text into logs.
-      return json({ error: "upstream_error" }, 502);
-    }
+    return withCors(await route(request, env), origin);
   },
 };
+
+async function route(request, env) {
+  if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
+  if (!env.GEMINI_API_KEY) return json({ error: "not_configured" }, 503);
+  const { pathname } = new URL(request.url);
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "invalid_json" }, 400);
+  }
+  try {
+    if (pathname === "/v1/reframe") return await handleReframe(body, env);
+    if (pathname === "/v1/search") return await handleSearch(body, env);
+    return json({ error: "not_found" }, 404);
+  } catch {
+    // Deliberately no details: errors must not echo user text into logs.
+    return json({ error: "upstream_error" }, 502);
+  }
+}

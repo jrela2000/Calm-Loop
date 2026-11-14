@@ -2,7 +2,11 @@
 
 > **Mobile-first CBT & Grounding Companion App for Panic and Anxiety Relief**
 
-**CalmLoop** is an Android application designed to guide users through anxiety spikes and panic attacks using Cognitive Behavioral Therapy (CBT) techniques, interactive box breathing exercises, a 5-4-3-2-1 sensory grounding game, and AI-powered voice journaling with theme analysis and pattern recognition.
+> **The app now lives in [`mobile/`](mobile/)**: one Expo (React Native) codebase for iOS,
+> Android and the web demo. The original Kotlin Android app in `app/` is kept for reference
+> until the Expo app reaches the stores.
+
+**CalmLoop** is a mobile app designed to guide users through anxiety spikes and panic attacks using Cognitive Behavioral Therapy (CBT) techniques, interactive box breathing exercises, a 5-4-3-2-1 sensory grounding game, and AI-powered voice journaling with theme analysis and pattern recognition.
 
 ---
 
@@ -31,33 +35,24 @@
 
 ## 🛠️ Built With
 
-- **Language**: Kotlin 100%
-- **UI Framework**: Jetpack Compose (Material Design 3 with custom glassmorphic styling)
-- **Architecture**: MVVM + Clean Architecture
-- **Local Storage**: Room (KSP, exported schemas) + DataStore
-- **Async & Reactive Flow**: Kotlin Coroutines & StateFlow
-- **AI Integration**: Google Gemini via a stateless relay (`proxy/`), so no API key ships in the app
-
----
+- **App** ([`mobile/`](mobile/)): Expo SDK 58, React Native, TypeScript, Expo Router
+- **Motion, sound, haptics**: Reanimated, expo-audio (synthesized UI tones), expo-haptics
+- **Storage**: on-device only (AsyncStorage via Zustand); export/restore backups
+- **AI**: Google Gemini via a stateless relay ([`proxy/`](proxy/)), so no API key ships in the app
+- **Legacy Android app** (`app/`): Kotlin, Jetpack Compose, Room
 
 ## 📱 Build & Run
 
-Requirements: JDK 17+, Android SDK (API 36). The Gradle wrapper downloads Gradle itself.
-
 ```
-./gradlew assembleDebug          # debug APK
-./gradlew testDebugUnitTest      # unit + Robolectric tests
-./gradlew lintRelease            # lint
-./gradlew bundleRelease          # Play Store bundle (signed if keystore.properties exists)
-node --test proxy/worker.test.mjs  # AI relay tests
+cd mobile && npm install && npx expo start   # see mobile/README.md
+node --test proxy/worker.test.mjs           # AI relay tests
 ```
 
-AI reflections need the relay: deploy `proxy/` (see `proxy/README.md`), then copy `.env.example`
-to `.env` and set `AI_PROXY_URL`. Without it the app builds and runs with AI unavailable.
+The legacy Kotlin app still builds with `./gradlew assembleDebug` (JDK 17+, Android SDK 36).
 
 ## 📄 Release & compliance
 
-- [Google Play release checklist](docs/play-store-release.md)
+- [Store release checklist (App Store + Google Play)](docs/store-release.md)
 - [Privacy Policy](docs/privacy-policy.md) · [Terms of Use](docs/terms-of-use.md)
 
 CalmLoop is a self-help tool, not a medical device or a substitute for professional care.

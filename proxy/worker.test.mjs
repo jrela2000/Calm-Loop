@@ -62,3 +62,27 @@ test("missing key reports not configured", async () => {
   );
   assert.equal(res.status, 503);
 });
+
+test("browser requests need an allowed origin", async () => {
+  const corsEnv = { ...env, ALLOWED_ORIGINS: "https://demo.test" };
+  upstream.body = geminiReply({ activating_event: "A", beliefs: "B", consequences: "C", ai_synopsis: "S" });
+  const ok = await worker.fetch(
+    new Request("https://relay.test/v1/reframe", { method: "POST", headers: { origin: "https://demo.test" }, body: JSON.stringify({ transcription: "hi" }) }),
+    corsEnv,
+  );
+  assert.equal(ok.status, 200);
+  assert.equal(ok.headers.get("access-control-allow-origin"), "https://demo.test");
+
+  const blocked = await worker.fetch(
+    new Request("https://relay.test/v1/reframe", { method: "POST", headers: { origin: "https://evil.test" }, body: "{}" }),
+    corsEnv,
+  );
+  assert.equal(blocked.status, 403);
+
+  const preflight = await worker.fetch(
+    new Request("https://relay.test/v1/reframe", { method: "OPTIONS", headers: { origin: "https://demo.test" } }),
+    corsEnv,
+  );
+  assert.equal(preflight.status, 204);
+  assert.equal(preflight.headers.get("access-control-allow-methods"), "POST");
+});

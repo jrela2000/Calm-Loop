@@ -8,22 +8,23 @@ analytics and no tracking**. We don't sell or share data, and we don't collect i
 
 ## What is stored, and where
 
-Everything you create stays **on your device**, in the app's private storage:
+Everything you create stays **on your device**, in the app's private storage (in your browser's
+storage if you use the web demo):
 
 - journal entries and their summaries or reflection prompts
 - breathing and grounding session history
-- your preferred name and app settings
-- a local count of taps on book links (never sent anywhere)
+- your preferred name, an optional trusted contact (name and phone number) and app settings
 
-This data is excluded from Google cloud backups. It can move to a new phone only through a direct
-device-to-device transfer that you start. **Settings → Delete All My Data** erases it, and
-uninstalling the app removes it.
+On Android this data is excluded from Google cloud backups. On iPhone it is included in your own
+encrypted iCloud or computer backup if you have backups turned on, like any app's data. You can
+also export a backup file yourself (Settings → Export backup); CalmLoop never sends it anywhere.
+**Settings → Delete all my data** erases everything, and uninstalling the app removes it.
 
 ## Microphone and speech
 
-Voice journaling and voice grounding use your phone's built-in speech recognition service to turn
-speech into text. CalmLoop does not record or keep audio. Depending on your device, that service
-(usually Google) may process audio under its own privacy policy. You can always type instead.
+Voice journaling uses your device's speech recognition service (Apple on iPhone, Google on
+Android, or your browser on the web) to turn speech into text. CalmLoop does not record or keep
+audio. That service may process audio under its own privacy policy. You can always type instead.
 
 ## AI reflections (optional, off by default)
 
@@ -43,7 +44,8 @@ Settings; nothing you write then leaves your device. AI tools were also used to 
 ## Links, calls and texts
 
 Crisis lines open your phone or messaging app, and book links open your browser. What happens there
-is governed by those services. CalmLoop doesn't earn money from book links.
+is governed by those services. CalmLoop doesn't earn money from book links and doesn't track taps
+on them.
 
 ## Children
 

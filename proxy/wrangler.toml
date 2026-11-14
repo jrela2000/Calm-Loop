@@ -8,5 +8,7 @@ enabled = false
 
 [vars]
 GEMINI_MODEL = "gemini-2.5-flash"
+# Web origins allowed to call the relay (the web demo). Native apps need no entry.
+ALLOWED_ORIGINS = "https://jarrodqsimpson.com,https://www.jarrodqsimpson.com,http://localhost:8081"
 
 # Secret (not in this file): wrangler secret put GEMINI_API_KEY
