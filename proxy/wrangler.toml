@@ -1,0 +1,12 @@
+name = "calmloop-ai"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+# Request logs only; never enable body logging for this worker.
+[observability]
+enabled = false
+
+[vars]
+GEMINI_MODEL = "gemini-2.5-flash"
+
+# Secret (not in this file): wrangler secret put GEMINI_API_KEY
