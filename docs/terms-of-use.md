@@ -9,6 +9,13 @@ diagnose or treat any condition, and is not a substitute for a doctor, therapist
 services. If you are in crisis or thinking about harming yourself, call or text **988** (US), call
 your local emergency number, or open Crisis Support in the app.
 
+## Use it safely
+
+Never use CalmLoop while driving: pull over somewhere safe and stop first. If you are somewhere
+unsafe, move to a safe place before using the app. If you might be having a medical emergency, such
+as chest pain, trouble breathing or fainting, call **911** or your local emergency number first.
+CalmLoop cannot tell panic from a medical problem.
+
 ## AI content
 
 AI-generated summaries are reflections, not advice. They may be inaccurate or incomplete. Don't rely

@@ -12,38 +12,41 @@ function previousDay(date: Date): Date {
   return d;
 }
 
+const dayNumber = (key: string) => {
+  const [y, m, d] = key.split('-').map(Number);
+  return Math.round(Date.UTC(y, m - 1, d) / 86400000);
+};
+
 /**
- * Consecutive days with at least one activity, ending today, or yesterday so a streak
- * isn't shown as broken before the user has had a chance to check in today.
+ * Gentle streak: the number of days you showed up in the current run. One rest day never breaks a
+ * run; two missed days in a row end it. Rest days aren't counted, and nothing is shown as "lost"
+ * before today is over.
  */
 export function currentStreak(timestamps: number[], now: Date = new Date()): number {
   const days = new Set(timestamps.map(localDayKey));
   let cursor = new Date(now);
-  if (!days.has(localDayKey(cursor.getTime()))) {
+  let count = 0;
+  let missed = 0;
+  for (let i = 0; i < 3660; i++) {
+    if (days.has(localDayKey(cursor.getTime()))) {
+      count++;
+      missed = 0;
+    } else if (++missed >= 2) {
+      break;
+    }
     cursor = previousDay(cursor);
-    if (!days.has(localDayKey(cursor.getTime()))) return 0;
   }
-  let streak = 0;
-  while (days.has(localDayKey(cursor.getTime()))) {
-    streak++;
-    cursor = previousDay(cursor);
-  }
-  return streak;
+  return count;
 }
 
+/** The best run ever, by the same rule: active days, with single rest days allowed in between. */
 export function longestStreak(timestamps: number[]): number {
-  const days = [...new Set(timestamps.map(localDayKey))].sort();
+  const days = [...new Set(timestamps.map(localDayKey))].map(dayNumber).sort((a, b) => a - b);
   let best = 0;
   let run = 0;
-  let prev: string | null = null;
+  let prev: number | null = null;
   for (const day of days) {
-    if (prev) {
-      const [y, m, d] = prev.split('-').map(Number);
-      const expected = localDayKey(new Date(y, m - 1, d + 1).getTime());
-      run = day === expected ? run + 1 : 1;
-    } else {
-      run = 1;
-    }
+    run = prev !== null && day - prev <= 2 ? run + 1 : 1;
     best = Math.max(best, run);
     prev = day;
   }

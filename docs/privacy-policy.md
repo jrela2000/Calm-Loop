@@ -13,7 +13,11 @@ storage if you use the web demo):
 
 - journal entries and their summaries or reflection prompts
 - breathing and grounding session history
-- your preferred name, an optional trusted contact (name and phone number) and app settings
+- your preferred name, your panic plan (the steps you chose and the words you wrote for yourself), an
+  optional emergency contact (name and phone number) and app settings
+
+The emergency contact is never sent to us or anyone else and is left out of backup files you
+export. Calling or texting them opens your own phone or messages app.
 
 On Android this data is excluded from Google cloud backups. On iPhone it is included in your own
 encrypted iCloud or computer backup if you have backups turned on, like any app's data. You can
@@ -24,7 +28,9 @@ also export a backup file yourself (Settings → Export backup); CalmLoop never 
 
 Voice journaling uses your device's speech recognition service (Apple on iPhone, Google on
 Android, or your browser on the web) to turn speech into text. CalmLoop does not record or keep
-audio. That service may process audio under its own privacy policy. You can always type instead.
+audio. When your device can transcribe speech by itself, CalmLoop uses that. When it can't, the app
+asks you once before using the online service, which may then process audio under its own privacy
+policy. You can always type instead.
 
 ## AI reflections (optional, off by default)
 

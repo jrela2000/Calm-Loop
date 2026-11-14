@@ -4,6 +4,11 @@
  */
 export const LAST_UPDATED = 'November 14, 2026';
 
+export const SAFETY_TERMS =
+  'Never use CalmLoop while driving: pull over somewhere safe and stop first. If you are somewhere unsafe, move to a safe place ' +
+  'before using the app. If you might be having a medical emergency, such as chest pain, trouble breathing or fainting, call 911 ' +
+  'or your local emergency number first. CalmLoop cannot tell panic from a medical problem.';
+
 export const MEDICAL_DISCLAIMER =
   'CalmLoop is a self-help tool for everyday anxiety and stress. It is not a medical device, does not ' +
   'diagnose or treat any condition, and is not a substitute for a doctor, therapist or emergency ' +
@@ -24,11 +29,11 @@ export const privacySections: [string, string][] = [
   ],
   [
     'What is stored on your device',
-    'Journal entries and their summaries, breathing and grounding history, your preferred name, an optional trusted contact and app settings. It lives only in the app’s private storage on your device (in your browser’s storage on the web demo). On Android it is excluded from Google cloud backups; on iPhone it is part of your own encrypted iCloud or computer backup if you use one, like any app’s data. Settings › Export creates a backup file only when you ask, and Settings › Delete all my data erases everything. Uninstalling the app also removes it.',
+    'Journal entries and their summaries, breathing and grounding history, your preferred name, your panic plan, an optional emergency contact (a name and phone number) and app settings. The emergency contact is never sent to us or anyone else and is not included in backup files you export; calling or texting them opens your own phone or messages app. It lives only in the app’s private storage on your device (in your browser’s storage on the web demo). On Android it is excluded from Google cloud backups; on iPhone it is part of your own encrypted iCloud or computer backup if you use one, like any app’s data. Settings › Export creates a backup file only when you ask, and Settings › Delete all my data erases everything. Uninstalling the app also removes it.',
   ],
   [
     'Microphone',
-    'Voice input uses your device’s speech recognition service (Apple, Google, or your browser) to turn speech into text. CalmLoop does not record or keep audio. That service may process audio under its own privacy policy. You can always type instead.',
+    'Voice input turns speech into text using your device’s speech recognition (Apple, Google, or your browser). CalmLoop does not record or keep audio. When your device can transcribe by itself, CalmLoop uses that. When it can’t, the app asks you once before using the online service, which may process audio under its own privacy policy. You can always type instead.',
   ],
   ['AI reflections (optional)', AI_SUMMARY],
   [
@@ -44,6 +49,7 @@ export const privacySections: [string, string][] = [
 
 export const termsSections: [string, string][] = [
   ['Not medical care', MEDICAL_DISCLAIMER],
+  ['Use it safely', SAFETY_TERMS],
   [
     'AI content',
     'AI-generated summaries are reflections, not advice. They may be inaccurate or incomplete. Don’t rely on them for decisions about your health.',

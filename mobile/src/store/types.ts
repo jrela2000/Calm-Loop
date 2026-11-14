@@ -30,6 +30,11 @@ export type GroundingSession = {
 
 export type TrustedContact = { name: string; phone: string };
 
+export type PlanStepId = 'safe' | 'breathe' | 'ground' | 'reminder' | 'contact' | 'water' | 'journal';
+
+/** The person's panic plan: the steps they chose and the words they wrote for themselves. */
+export type PanicPlan = { steps: PlanStepId[]; reminder: string };
+
 export type Settings = {
   userName: string;
   acceptedDisclaimerVersion: number;
@@ -38,6 +43,9 @@ export type Settings = {
   hapticsEnabled: boolean;
   theme: ThemePreference;
   trustedContact: TrustedContact | null;
+  panicPlan: PanicPlan;
+  /** Agreed to use the phone's or browser's online speech service when on-device speech isn't available. */
+  voiceConsent: boolean;
 };
 
 export type JournalJob =

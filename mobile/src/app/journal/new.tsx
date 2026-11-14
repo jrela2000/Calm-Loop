@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { Platform, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 
 import { AppText } from '@/components/AppText';
@@ -9,6 +9,7 @@ import { Button } from '@/components/Button';
 import { Header } from '@/components/Header';
 import { PressableScale } from '@/components/PressableScale';
 import { Screen } from '@/components/Screen';
+import { confirmChoice } from '@/lib/dialog';
 import { feedback } from '@/lib/feedback';
 import { useDictation } from '@/lib/speech';
 import { useAppStore } from '@/store/app-store';
@@ -52,6 +53,25 @@ export default function NewEntry() {
   const [prompt] = useState(() => PROMPTS[Math.floor(Math.random() * PROMPTS.length)]);
   const dictation = useDictation((phrase) => setText((prev) => (prev.trim() ? `${prev.trim()} ${phrase}` : phrase)));
   const listening = dictation.state === 'listening';
+  const voiceConsent = useAppStore((s) => s.settings.voiceConsent);
+  const updateSettings = useAppStore((s) => s.updateSettings);
+
+  // On-device speech needs no question. The online service is only used after a one-time yes.
+  const toggleMic = async () => {
+    if (listening) return dictation.stop();
+    if ((await dictation.start(voiceConsent)) !== 'needs-consent') return;
+    const who = Platform.OS === 'ios' ? 'Apple’s' : Platform.OS === 'android' ? 'Google’s' : 'your browser’s';
+    confirmChoice(
+      'Use online voice typing?',
+      `This ${Platform.OS === 'web' ? 'browser' : 'phone'} can’t turn speech into text by itself, so voice typing would use ${who} speech service. Your audio goes to them while you speak. CalmLoop never receives or keeps it.`,
+      'Use voice typing',
+      () => {
+        updateSettings({ voiceConsent: true });
+        void dictation.start(true);
+      },
+      'I’ll type',
+    );
+  };
   const shown = dictation.partial ? `${text}${text && !text.endsWith(' ') ? ' ' : ''}${dictation.partial}` : text;
 
   function save() {
@@ -96,7 +116,7 @@ export default function NewEntry() {
       />
       {dictation.supported ? (
         <View style={styles.micRow}>
-          <MicButton listening={listening} onPress={() => (listening ? dictation.stop() : dictation.start())} />
+          <MicButton listening={listening} onPress={toggleMic} />
           <AppText variant="caption" tone="secondary" style={{ flex: 1 }} accessibilityLiveRegion="polite">
             {listening
               ? 'Listening… tap stop when you’re done.'

@@ -16,3 +16,15 @@ export function notify(title: string, message: string) {
   if (Platform.OS === 'web') window.alert(`${title}\n\n${message}`);
   else Alert.alert(title, message);
 }
+
+/** A yes/no question with a non-destructive "yes". */
+export function confirmChoice(title: string, message: string, action: string, onConfirm: () => void, cancel = 'Not now') {
+  if (Platform.OS === 'web') {
+    if (window.confirm(`${title}\n\n${message}`)) onConfirm();
+    return;
+  }
+  Alert.alert(title, message, [
+    { text: cancel, style: 'cancel' },
+    { text: action, onPress: onConfirm },
+  ]);
+}

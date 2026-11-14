@@ -30,6 +30,7 @@ function Navigator() {
           <Stack.Screen name="journal/processing" options={{ animation: 'fade', gestureEnabled: false }} />
           <Stack.Screen name="journal/[id]" />
           <Stack.Screen name="crisis" options={{ animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="plan" options={{ animation: 'slide_from_bottom' }} />
           <Stack.Screen name="settings" />
         </Stack.Protected>
         <Stack.Screen name="privacy" />

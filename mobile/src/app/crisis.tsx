@@ -60,6 +60,19 @@ export default function Crisis() {
         </Card>
       </Appear>
 
+      <Card onPress={() => router.push('/plan')} testID="crisis-open-plan" accessibilityLabel="Open my panic plan">
+        <View style={styles.row}>
+          <Ionicons name="list-outline" size={22} color={t.blueStrong} />
+          <View style={{ flex: 1 }}>
+            <AppText variant="bodyStrong">My panic plan</AppText>
+            <AppText variant="caption" tone="secondary">
+              The steps you chose, one tap each.
+            </AppText>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={t.textMuted} />
+        </View>
+      </Card>
+
       <SectionLabel>Someone you trust</SectionLabel>
       {contact ? (
         <LineCard
@@ -71,11 +84,11 @@ export default function Crisis() {
           onPress={() => openSafely(telUrl(contact.phone), `Please call ${contact.phone} from a phone.`)}
         />
       ) : (
-        <Card onPress={() => router.push('/settings')} accessibilityLabel="Add a trusted contact in settings">
+        <Card onPress={() => router.push('/plan')} accessibilityLabel="Add an emergency contact to your panic plan">
           <View style={styles.row}>
             <Ionicons name="person-add-outline" size={22} color={t.blueStrong} />
             <AppText variant="caption" tone="secondary" style={{ flex: 1 }}>
-              Add a friend or family member in Settings so they’re one tap away here.
+              Add a friend or family member to your panic plan so they’re one tap away here.
             </AppText>
           </View>
         </Card>
