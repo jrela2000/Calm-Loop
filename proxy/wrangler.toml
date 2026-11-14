@@ -1,0 +1,14 @@
+name = "calmloop-ai"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+# Request logs only; never enable body logging for this worker.
+[observability]
+enabled = false
+
+[vars]
+GEMINI_MODEL = "gemini-2.5-flash"
+# Web origins allowed to call the relay (the web demo). Native apps need no entry.
+ALLOWED_ORIGINS = "https://jarrodqsimpson.com,https://www.jarrodqsimpson.com,http://localhost:8081"
+
+# Secret (not in this file): wrangler secret put GEMINI_API_KEY

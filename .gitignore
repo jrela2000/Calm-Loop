@@ -16,3 +16,13 @@
 local.properties
 .env
 debug.keystore
+
+# Release signing (never commit)
+keystore.properties
+*.jks
+*.keystore
+
+# AI relay local secrets
+proxy/.dev.vars
+proxy/node_modules
+proxy/.wrangler
