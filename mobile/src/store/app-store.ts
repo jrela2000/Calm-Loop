@@ -4,6 +4,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { reframeEntry } from '@/lib/ai';
 import { newId } from '@/lib/id';
+import { cleanPlan, DEFAULT_PLAN } from '@/lib/plan';
 
 import type {
   BreathingOutcome,
@@ -15,7 +16,8 @@ import type {
 } from './types';
 
 /** Bump when the disclaimer or privacy terms change materially so users see them again. */
-export const CURRENT_DISCLAIMER_VERSION = 1;
+// 2: adds the safety notes and the panic plan, so everyone sees them once.
+export const CURRENT_DISCLAIMER_VERSION = 2;
 export const DEFAULT_USER_NAME = 'friend';
 /** Keep the "untangling" moment on screen long enough to register, even when offline. */
 export const MIN_PROCESSING_MS = 1400;
@@ -28,6 +30,8 @@ export const defaultSettings: Settings = {
   hapticsEnabled: true,
   theme: 'system',
   trustedContact: null,
+  panicPlan: DEFAULT_PLAN,
+  voiceConsent: false,
 };
 
 type Data = {
@@ -135,7 +139,8 @@ export const useAppStore = create<State>()(
       partialize: (s): Data => ({ settings: s.settings, entries: s.entries, breathing: s.breathing, grounding: s.grounding }),
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<Data>;
-        return { ...current, ...p, settings: { ...defaultSettings, ...p.settings } };
+        const settings = { ...defaultSettings, ...p.settings };
+        return { ...current, ...p, settings: { ...settings, panicPlan: cleanPlan(settings.panicPlan) } };
       },
       onRehydrateStorage: () => () => useAppStore.setState({ hydrated: true }),
     },

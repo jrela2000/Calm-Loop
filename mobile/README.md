@@ -7,7 +7,8 @@ the App Store, Google Play and the web demo.
 - **5-4-3-2-1 grounding**: tap "Noticed one" for each item; typing is optional
 - **Journal**: type or dictate, then get an optional AI-generated CBT ABC reflection
 - **Progress**: streaks, a 14-day chart, and how you felt after breathing sessions
-- **Crisis support**: US lines, an international helpline finder, and your own trusted contact
+- **Panic plan**: safety notes and a personal plan set up in onboarding, with a one-tap 911 button and your emergency contact
+- **Crisis support**: US lines, an international helpline finder, and your emergency contact
 - **Privacy**: no accounts or servers storing data; everything lives on the device; export/restore backups
 
 ## Run it

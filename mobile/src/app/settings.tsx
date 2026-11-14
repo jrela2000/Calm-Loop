@@ -2,12 +2,13 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { SectionLabel, ToggleRow } from '@/components/Bits';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
+import { Field } from '@/components/Field';
 import { Header } from '@/components/Header';
 import { PressableScale } from '@/components/PressableScale';
 import { Screen } from '@/components/Screen';
@@ -27,29 +28,6 @@ const THEMES: { value: ThemePreference; label: string; icon: keyof typeof Ionico
   { value: 'dark', label: 'Dark', icon: 'moon-outline' },
 ];
 
-function Field({ label, value, onChangeText, placeholder, keyboardType, testID }: {
-  label: string;
-  value: string;
-  onChangeText: (v: string) => void;
-  placeholder?: string;
-  keyboardType?: 'default' | 'phone-pad';
-  testID?: string;
-}) {
-  const t = useTheme();
-  return (
-    <TextInput
-      testID={testID}
-      value={value}
-      onChangeText={onChangeText}
-      placeholder={placeholder}
-      placeholderTextColor={t.textMuted}
-      keyboardType={keyboardType}
-      accessibilityLabel={label}
-      style={[styles.input, { outlineColor: t.blue, color: t.text, backgroundColor: t.background, borderColor: t.border }]}
-    />
-  );
-}
-
 export default function Settings() {
   const t = useTheme();
   const settings = useAppStore((s) => s.settings);
@@ -57,12 +35,8 @@ export default function Settings() {
   const importData = useAppStore((s) => s.importData);
   const deleteAllData = useAppStore((s) => s.deleteAllData);
   const [name, setName] = useState(settings.userName);
-  const [contactName, setContactName] = useState(settings.trustedContact?.name ?? '');
-  const [contactPhone, setContactPhone] = useState(settings.trustedContact?.phone ?? '');
   const aiAvailable = isAiConfigured();
 
-  const contactChanged =
-    contactName.trim() !== (settings.trustedContact?.name ?? '') || contactPhone.trim() !== (settings.trustedContact?.phone ?? '');
 
   async function exportAll() {
     const { entries, breathing, grounding } = useAppStore.getState();
@@ -105,24 +79,16 @@ export default function Settings() {
         </View>
       </Card>
 
-      <Card>
-        <AppText variant="bodyStrong">Trusted contact</AppText>
-        <AppText variant="caption" tone="secondary">
-          Someone you can call in a hard moment. Shown on the Crisis screen; stored only on this device.
-        </AppText>
-        <View style={{ gap: space.sm, marginTop: space.sm }}>
-          <Field label="Contact name" value={contactName} onChangeText={setContactName} placeholder="Name" testID="contact-name" />
-          <Field label="Contact phone number" value={contactPhone} onChangeText={setContactPhone} placeholder="Phone number" keyboardType="phone-pad" testID="contact-phone" />
-          <Button
-            variant="secondary"
-            label={!contactName.trim() && !contactPhone.trim() && settings.trustedContact ? 'Remove contact' : 'Save contact'}
-            disabled={!contactChanged || (!!contactName.trim() !== !!contactPhone.trim())}
-            onPress={() =>
-              updateSettings({
-                trustedContact: contactName.trim() && contactPhone.trim() ? { name: contactName.trim(), phone: contactPhone.trim() } : null,
-              })
-            }
-          />
+      <Card onPress={() => router.push('/plan')} testID="settings-open-plan" accessibilityLabel="My panic plan and emergency contact">
+        <View style={styles.inlineRow}>
+          <Ionicons name="medkit-outline" size={22} color={t.dangerStrong} />
+          <View style={{ flex: 1 }}>
+            <AppText variant="bodyStrong">My panic plan</AppText>
+            <AppText variant="caption" tone="secondary">
+              {settings.trustedContact ? `Your steps, and ${settings.trustedContact.name} as your emergency contact.` : 'Your steps and an emergency contact, stored only on this device.'}
+            </AppText>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={t.textMuted} />
         </View>
       </Card>
 
@@ -228,7 +194,7 @@ export default function Settings() {
           testID="delete-all"
           onPress={() => {
             feedback.warning();
-            confirmDestructive('Delete all data?', 'All journal entries, history and settings will be permanently erased. This can’t be undone.', 'Delete everything', deleteAllData);
+            confirmDestructive('Delete all data?', 'All journal entries, history, your panic plan, your emergency contact and settings will be permanently erased. This can’t be undone.', 'Delete everything', deleteAllData);
           }}
         />
       </Card>
@@ -241,8 +207,8 @@ export default function Settings() {
 }
 
 const styles = StyleSheet.create({
+  inlineRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   inline: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.sm },
-  input: { borderWidth: 1, borderRadius: radius.md, paddingHorizontal: space.md, minHeight: 48, fontSize: 16 },
   segment: { flexDirection: 'row', borderWidth: 1, borderRadius: radius.md, padding: 4, marginTop: space.sm, gap: 4 },
   segmentItem: { minHeight: 44, borderRadius: radius.sm, flexDirection: 'row', gap: 6, alignItems: 'center', justifyContent: 'center' },
   divider: { height: 1, marginVertical: space.md },

@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Platform } from 'react-native';
 
 type SpeechModule = {
   isRecognitionAvailable(): boolean;
+  supportsOnDeviceRecognition?(): boolean;
   requestPermissionsAsync(): Promise<{ granted: boolean }>;
   start(options: Record<string, unknown>): void;
   stop(): void;
@@ -27,7 +29,18 @@ function available(): boolean {
   }
 }
 
+/** True when this device can turn speech into text without sending audio anywhere. Browsers never can. */
+export function onDeviceSpeech(): boolean {
+  if (Platform.OS === 'web') return false;
+  try {
+    return !!speech?.supportsOnDeviceRecognition?.();
+  } catch {
+    return false;
+  }
+}
+
 export type DictationState = 'idle' | 'listening' | 'denied' | 'error';
+export type StartResult = 'started' | 'needs-consent' | 'denied' | 'unavailable';
 
 /**
  * Speech-to-text for journaling. Calls `onFinal` with each finished phrase and exposes the
@@ -72,14 +85,27 @@ export function useDictation(onFinal: (text: string) => void) {
     };
   }, [supported]);
 
-  const start = useCallback(async () => {
-    if (!speech || !supported) return;
+  /**
+   * Starts listening. On-device recognition is used whenever the device supports it. Otherwise the
+   * phone's or browser's online service is only used once the person has agreed (`consented`).
+   */
+  const start = useCallback(async (consented: boolean): Promise<StartResult> => {
+    if (!speech || !supported) return 'unavailable';
+    const local = onDeviceSpeech();
+    if (!local && !consented) return 'needs-consent';
     const perm = await speech.requestPermissionsAsync();
     if (!perm.granted) {
       setState('denied');
-      return;
+      return 'denied';
     }
-    speech.start({ lang: Intl.DateTimeFormat().resolvedOptions().locale, interimResults: true, continuous: true, addsPunctuation: true });
+    speech.start({
+      lang: Intl.DateTimeFormat().resolvedOptions().locale,
+      interimResults: true,
+      continuous: true,
+      addsPunctuation: true,
+      requiresOnDeviceRecognition: local,
+    });
+    return 'started';
   }, [supported]);
 
   const stop = useCallback(() => {

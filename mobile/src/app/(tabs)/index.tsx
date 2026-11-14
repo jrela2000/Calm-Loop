@@ -51,6 +51,23 @@ export default function Home() {
         <IconButton icon="settings-outline" label="Settings" onPress={() => router.push('/settings')} testID="open-settings" />
       </View>
 
+      <PressableScale
+        testID="open-plan"
+        onPress={() => router.push('/plan')}
+        accessibilityLabel="Panicking right now? Open my panic plan."
+        style={[styles.crisis, { backgroundColor: t.dangerSurface, borderColor: t.dangerBorder }]}>
+        <Ionicons name="medkit-outline" size={22} color={t.dangerStrong} />
+        <View style={{ flex: 1 }}>
+          <AppText variant="bodyStrong" tone="danger">
+            Panicking right now?
+          </AppText>
+          <AppText variant="caption" tone="secondary">
+            Open your plan: safety first, then one step at a time.
+          </AppText>
+        </View>
+        <Ionicons name="chevron-forward" size={18} color={t.dangerStrong} />
+      </PressableScale>
+
       <Appear>
         <Card style={styles.hero}>
           <BreathingOrbStatic size={84} />

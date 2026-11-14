@@ -43,7 +43,12 @@ export function Screen({ children, scroll = true, edges = ['top', 'bottom'], foo
           ) : (
             <View style={[styles.flex, styles.scroll]}>{content}</View>
           )}
-          {footer ? <View style={styles.footer}>{footer}</View> : null}
+          {footer ? (
+            // Fades the page out behind the buttons so scrolled text never shows through them.
+            <LinearGradient colors={[`${t.background}00`, t.background, t.background]} style={styles.footer}>
+              {footer}
+            </LinearGradient>
+          ) : null}
         </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
@@ -54,5 +59,5 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   scroll: { paddingHorizontal: space.xl, paddingTop: space.md, paddingBottom: space.xxxl, flexGrow: 1 },
   content: { width: '100%', maxWidth: MAX_CONTENT_WIDTH, alignSelf: 'center', gap: space.lg, flexGrow: 1 },
-  footer: { paddingHorizontal: space.xl, paddingBottom: space.md, width: '100%', maxWidth: MAX_CONTENT_WIDTH + space.xl * 2, alignSelf: 'center' },
+  footer: { paddingHorizontal: space.xl, paddingTop: space.lg, paddingBottom: space.md, width: '100%', maxWidth: MAX_CONTENT_WIDTH + space.xl * 2, alignSelf: 'center' },
 });
